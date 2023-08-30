@@ -1,0 +1,145 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Test API"
+  },
+  "paths": {
+    "/test": {
+      "get": {
+        "tags": [
+          "tag1",
+          "tag2"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "string",
+            "in": "query",
+            "description": "A string param",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "int",
+            "in": "query",
+            "description": "An int param",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "bool",
+            "in": "query",
+            "description": "A bool param",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "required",
+            "in": "query",
+            "description": "A required string param",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "manyParam",
+            "in": "query",
+            "description": "An array param",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "enum",
+            "in": "query",
+            "description": "An enum param",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ENUM_1",
+              "ENUM_2"
+            ]
+          },
+          {
+            "name": "localDate",
+            "in": "query",
+            "description": "A local date param",
+            "required": false,
+            "type": "string",
+            "format": "date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Result",
+              "originalRef": "Result"
+            },
+            "responseSchema": {
+              "$ref": "#/definitions/Result",
+              "originalRef": "Result"
+            }
+          }
+        },
+        "responsesObject": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Result",
+              "originalRef": "Result"
+            },
+            "responseSchema": {
+              "$ref": "#/definitions/Result",
+              "originalRef": "Result"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Result": {
+      "type": "object",
+      "properties": {
+        "string": {
+          "type": "string"
+        },
+        "int": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "bool": {
+          "type": "boolean"
+        },
+        "required": {
+          "type": "string"
+        },
+        "many": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "enum": {
+          "type": "string",
+          "enum": [
+            "ENUM_1",
+            "ENUM_2"
+          ]
+        },
+        "localDate": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    }
+  }
+}
