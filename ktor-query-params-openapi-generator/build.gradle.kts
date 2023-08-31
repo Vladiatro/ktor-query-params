@@ -2,7 +2,8 @@ dependencies {
     implementation(project(":ktor-query-params"))
 
     implementation(libs.ktorServerCore)
-    implementation(libs.swaggerCore)
+
+    api(libs.swaggerCore)
 
     testImplementation(libs.ktorServerCoreJvm)
     testImplementation(libs.ktorServerTestHost)

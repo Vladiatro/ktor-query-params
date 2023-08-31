@@ -42,7 +42,7 @@ class KtorTest {
                 assertEquals(123, int)
                 assertEquals(true, bool)
                 assertEquals("requiredValue", required)
-                assertEquals(setOf("many1", "many2"), many)
+                assertEquals(listOf("many1", "many2"), many)
                 assertEquals(null, absentParam)
                 assertEquals(LocalDate.parse("2023-08-01"), localDate)
             })
@@ -95,7 +95,7 @@ class KtorTest {
                         } catch (e: ArgumentParseException) {
                             val cause = e.cause
                             if (cause is EnumParseException) {
-                                call.respond(cause.message ?: "")
+                                call.respond("not found: ${cause.notFoundValue}, enum: ${cause.enum.simpleName}")
                             }
                         }
                     }
@@ -109,7 +109,7 @@ class KtorTest {
             parameter("enum", "wrongEnum")
         }
         val result: String = response.body()
-        assertEquals("wrongEnum is not valid for enum TestEnum", result)
+        assertEquals("not found: wrongEnum, enum: TestEnum", result)
     }
 
     @Test
@@ -132,7 +132,7 @@ class KtorTest {
         val int: Int?,
         val bool: Boolean?,
         val required: String,
-        val many: Set<String>,
+        val many: List<String>,
         val absentParam: String?,
         val enum: TestEnum?,
         val localDate: LocalDate?,

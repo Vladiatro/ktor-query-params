@@ -85,7 +85,7 @@ private fun getPath(route: Route?): String {
         is RootRouteSelector -> ""
         is TrailingSlashRouteSelector -> ""
         is PathSegmentConstantRouteSelector -> getPath(route.parent) + "/" + selector.value.removePrefix("/")
-        else -> throw UnsupportedOperationException("Unsupported selector: $selector")
+        else -> getPath(route.parent)
     }
 }
 
@@ -105,7 +105,7 @@ private fun applyActions(route: Route?, swaggerPath: Path, plugin: KtorOpenapiPl
 private fun getOperation(childRoute: Route): Operation {
     return Operation().apply {
         childRoute.getParams().forEach { param ->
-            addParameter(getParameter(param))
+            getParameter(param)?.let(::addParameter)
         }
         childRoute.getResponses().forEach { response ->
             produces = (produces ?: emptyList()) + response.contentType.let { it.contentType + "/" + it.contentSubtype }

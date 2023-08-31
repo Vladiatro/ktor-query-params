@@ -24,7 +24,7 @@ routing {
         val boolParam = boolParam("bool") // Bool?
         val requiredParam = stringParam("required")
             .required() // String
-        val manyParam = stringParam("manyParam").many() // Set<String>
+        val manyParam = stringParam("manyParam").many() // List<String>
         val enumParam = enumParam<TestEnum>("enum") // TestEnum?
         val localDateParam = localDateParam("localDate") // LocalDate?
 
@@ -79,6 +79,10 @@ routing {
     route("/test") {
         val stringParam = stringParam("string")
             .description("A string param")
+        val hiddenParam = stringParam("hiddenString")
+            .hidden()
+        val customSwaggerProperty = stringParam("email")
+            .openApi(EmailProperty())
 
         val okResult = responds<Result>()
 
@@ -88,7 +92,9 @@ routing {
         doGet {
             okResult.send(
                 Result(
-                    stringParam.get()
+                    stringParam.get(),
+                    hiddenParam.get(),
+                    customSwaggerProperty.get()
                 )
             )
         }
@@ -101,6 +107,10 @@ routing {
     swaggerJsonRoute()
 }
 ```
+
+The definition will be available under `/swagger.json` endpoint (customizable in `swaggerJsonRoute`).
+It will contain query params and results defined with the ktor-query-params library.
+Request bodies are not currently supported (you can use `io.ktor:ktor-server-swagger-jvm` generator for them).
 
 ## Contributions
 

@@ -73,31 +73,38 @@
             "required": false,
             "type": "string",
             "format": "date"
+          },
+          {
+            "name": "custom",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "email"
           }
         ],
         "responses": {
           "200": {
             "description": "Successful operation",
-            "schema": {
-              "$ref": "#/definitions/Result",
-              "originalRef": "Result"
-            },
             "responseSchema": {
-              "$ref": "#/definitions/Result",
-              "originalRef": "Result"
+              "originalRef": "Result",
+              "$ref": "#/definitions/Result"
+            },
+            "schema": {
+              "originalRef": "Result",
+              "$ref": "#/definitions/Result"
             }
           }
         },
         "responsesObject": {
           "200": {
             "description": "Successful operation",
-            "schema": {
-              "$ref": "#/definitions/Result",
-              "originalRef": "Result"
-            },
             "responseSchema": {
-              "$ref": "#/definitions/Result",
-              "originalRef": "Result"
+              "originalRef": "Result",
+              "$ref": "#/definitions/Result"
+            },
+            "schema": {
+              "originalRef": "Result",
+              "$ref": "#/definitions/Result"
             }
           }
         }
@@ -123,7 +130,6 @@
         },
         "many": {
           "type": "array",
-          "uniqueItems": true,
           "items": {
             "type": "string"
           }

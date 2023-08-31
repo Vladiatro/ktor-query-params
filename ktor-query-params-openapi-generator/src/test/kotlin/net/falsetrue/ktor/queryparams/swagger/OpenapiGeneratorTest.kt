@@ -9,6 +9,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.swagger.annotations.ApiModelProperty
 import io.swagger.models.Info
+import io.swagger.models.properties.EmailProperty
 import net.falsetrue.ktor.queryparams.*
 import net.javacrumbs.jsonunit.JsonAssert
 import org.junit.jupiter.api.Test
@@ -16,7 +17,7 @@ import java.time.LocalDate
 
 class OpenapiGeneratorTest {
     @Test
-    fun testGetParams() = testApplication {
+    fun testOpenapiGeneration() = testApplication {
         simpleApplication()
         val client = createClient {
             install(ContentNegotiation) {
@@ -54,12 +55,19 @@ fun TestApplicationBuilder.simpleApplication() = application {
                 .description("An enum param")
             val localDateParam = localDateParam("localDate")
                 .description("A local date param")
+            val hiddenParam = stringParam("hidden")
+                .hidden()
+            val customApiProperty = stringParam("custom")
+                .openApi(EmailProperty())
+
             val okResult = responds<Result>()
                 .description("Successful operation")
             openApi {
                 get.tags = listOf("tag1", "tag2")
             }
             doGet {
+                hiddenParam.get()
+                customApiProperty.get()
                 okResult.send(
                     Result(
                         stringParam.get(),
@@ -91,7 +99,7 @@ private data class Result(
     val int: Int?,
     val bool: Boolean?,
     val required: String,
-    val many: Set<String>,
+    val many: List<String>,
     val enum: TestEnum?,
     val localDate: LocalDate?,
     @ApiModelProperty(hidden = true)

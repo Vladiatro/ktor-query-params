@@ -22,6 +22,17 @@ class Param<T>(
     fun <R> replaceBy(p: Param<R>) {
         this.context.plugin.replaceParam(this, p)
     }
+
+    fun withAction(action: ParamAction): Param<T> {
+        val newParam: Param<T> = Param(
+            name,
+            context,
+            actions + action,
+            receiver
+        )
+        replaceBy(newParam)
+        return newParam
+    }
 }
 
 fun Route.stringParam(name: String): Param<String?> {
@@ -55,15 +66,15 @@ inline fun <T, reified R> Param<T>.convert(crossinline converter: (T) -> R): Par
     return newParam
 }
 
-fun <T> Param<T?>.many(): Param<Set<T>> {
-    val newParam: Param<Set<T>> = Param(
+fun <T> Param<T?>.many(): Param<List<T>> {
+    val newParam: Param<List<T>> = Param(
         name,
         context,
         actions + ManyAction
     ) { args ->
-        args.getAll(name)?.mapTo(hashSetOf()) {
+        args.getAll(name)?.map {
             receiver(parametersOf(name, it))!!
-        } ?: emptySet()
+        } ?: emptyList()
     }
     replaceBy(newParam)
     return newParam
