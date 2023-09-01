@@ -46,7 +46,7 @@ fun Route.boolParam(name: String) = stringParam(name)
     .convert { it?.toBoolean() }
 
 fun Route.localDateParam(name: String) = stringParam(name)
-    .convert { LocalDate.parse(it) }
+    .convert { it?.let(LocalDate::parse) }
 
 inline fun <reified T : Enum<T>> Route.enumParam(name: String) = stringParam(name)
     .convert { input ->
@@ -98,6 +98,6 @@ fun <T> ApplicationCall.get(param: Param<T>): T {
     }
 }
 
-class ArgumentParseException(val name: String, cause: Exception): IllegalArgumentException("Invalid $name parameter format", cause)
+class ArgumentParseException(val name: String, cause: Exception): IllegalArgumentException("Invalid format for parameter $name parameter", cause)
 
 class EnumParseException(val enum: Class<*>, val notFoundValue: String): IllegalArgumentException("$notFoundValue is not valid for enum ${enum.simpleName}")
