@@ -8,6 +8,9 @@ The **ktor-query-params** library consists of two modules that provide defined h
 
 The **ktor-query-params** module introduces a convenient way to define and manage query parameters and responses in Ktor applications. It enables you to pre-declare query parameters with explicit type checks and conversions, ensuring that your code adheres to the specified contract.
 
+#### Installing (Gradle)
+`implementation("net.falsetrue:ktor-query-params:0.1.0")`
+
 #### Features
 
 - Declare query parameters and responses in advance.
@@ -59,6 +62,9 @@ routing {
 ### ktor-query-params-openapi-generator
 
 The **ktor-query-params-openapi-generator** module wraps the `io.swagger:swagger-core` library and facilitates the automatic generation of Swagger definitions for Ktor endpoints that utilize query parameters defined with the prior module.
+
+#### Installing (Gradle)
+`implementation("net.falsetrue:ktor-query-params-openapi-generator:0.1.0")`
 
 #### Features
 

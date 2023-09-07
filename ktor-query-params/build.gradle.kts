@@ -12,3 +12,15 @@ dependencies {
     testImplementation(libs.ktorSerializationJson)
     testImplementation(libs.jackson)
 }
+
+publishing {
+    publications {
+        getByName<MavenPublication>("maven") {
+            pom {
+                name = "Ktor Query Params Library"
+                description = "Introduces a convenient way to define and manage query parameters and responses in Ktor applications"
+                url = "https://github.com/Vladiatro/ktor-query-params/ktor-query-params"
+            }
+        }
+    }
+}
