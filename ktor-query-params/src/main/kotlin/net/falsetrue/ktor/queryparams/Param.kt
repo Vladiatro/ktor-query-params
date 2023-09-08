@@ -7,9 +7,10 @@ import java.time.LocalDate
 
 interface ParamAction
 
-data class TypeAction (
+data class TypeAction(
     val type: Class<*>
 ) : ParamAction
+
 object ManyAction : ParamAction
 object RequiredAction : ParamAction
 
@@ -85,7 +86,9 @@ fun <T> Param<T?>.required(): Param<T> {
         name,
         context,
         actions + RequiredAction
-    ) { receiver(it)!! }
+    ) {
+        receiver(it) ?: throw ArgumentParseException(name, "Parameter $name is not specified")
+    }
     replaceBy(newParam)
     return newParam
 }
@@ -93,11 +96,18 @@ fun <T> Param<T?>.required(): Param<T> {
 fun <T> ApplicationCall.get(param: Param<T>): T {
     return try {
         param.receiver(parameters)
+    } catch (e: ArgumentParseException) {
+        throw e
     } catch (e: Exception) {
-        throw ArgumentParseException(param.name, e)
+        throw ArgumentParseException(param.name, cause = e)
     }
 }
 
-class ArgumentParseException(val name: String, cause: Exception): IllegalArgumentException("Invalid format for parameter $name parameter", cause)
+open class ArgumentParseException(
+    val name: String,
+    message: String = "Invalid format for parameter $name",
+    cause: Exception? = null
+) : IllegalArgumentException(message, cause)
 
-class EnumParseException(val enum: Class<*>, val notFoundValue: String): IllegalArgumentException("$notFoundValue is not valid for enum ${enum.simpleName}")
+class EnumParseException(val enum: Class<*>, val notFoundValue: String) :
+    ArgumentParseException(notFoundValue, message = "$notFoundValue is not valid for enum ${enum.simpleName}")

@@ -92,11 +92,8 @@ class KtorTest {
                     doGet {
                         try {
                             enumParam.get()
-                        } catch (e: ArgumentParseException) {
-                            val cause = e.cause
-                            if (cause is EnumParseException) {
-                                call.respond("not found: ${cause.notFoundValue}, enum: ${cause.enum.simpleName}")
-                            }
+                        } catch (e: EnumParseException) {
+                            call.respond("not found: ${e.notFoundValue}, enum: ${e.enum.simpleName}")
                         }
                     }
                 }
@@ -110,6 +107,35 @@ class KtorTest {
         }
         val result: String = response.body()
         assertEquals("not found: wrongEnum, enum: TestEnum", result)
+    }
+
+    @Test
+    fun testRequiredParamNotFound() = testApplication {
+        val client = createClient {
+            install(ContentNegotiation) {
+                jackson()
+            }
+        }
+        application {
+            routing {
+                val requiredParam = stringParam("requiredParam").required()
+                route("/test") {
+                    doGet {
+                        try {
+                            requiredParam.get()
+                        } catch (e: ArgumentParseException) {
+                            call.respond(e.message ?: "")
+                        }
+                    }
+                }
+            }
+            install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
+                jackson()
+            }
+        }
+        val response = client.get("/test") { }
+        val result: String = response.body()
+        assertEquals("Parameter requiredParam is not specified", result)
     }
 
     @Test
