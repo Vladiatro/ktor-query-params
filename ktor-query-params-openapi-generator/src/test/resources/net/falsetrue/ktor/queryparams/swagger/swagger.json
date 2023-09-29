@@ -85,26 +85,48 @@
         "responses": {
           "200": {
             "description": "Successful operation",
-            "responseSchema": {
-              "originalRef": "Result",
-              "$ref": "#/definitions/Result"
-            },
             "schema": {
-              "originalRef": "Result",
-              "$ref": "#/definitions/Result"
+              "$ref": "#/definitions/Result",
+              "originalRef": "Result"
+            },
+            "responseSchema": {
+              "$ref": "#/definitions/Result",
+              "originalRef": "Result"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error",
+              "originalRef": "Error"
+            },
+            "responseSchema": {
+              "$ref": "#/definitions/Error",
+              "originalRef": "Error"
             }
           }
         },
         "responsesObject": {
           "200": {
             "description": "Successful operation",
-            "responseSchema": {
-              "originalRef": "Result",
-              "$ref": "#/definitions/Result"
-            },
             "schema": {
-              "originalRef": "Result",
-              "$ref": "#/definitions/Result"
+              "$ref": "#/definitions/Result",
+              "originalRef": "Result"
+            },
+            "responseSchema": {
+              "$ref": "#/definitions/Result",
+              "originalRef": "Result"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error",
+              "originalRef": "Error"
+            },
+            "responseSchema": {
+              "$ref": "#/definitions/Error",
+              "originalRef": "Error"
             }
           }
         }
@@ -144,6 +166,14 @@
         "localDate": {
           "type": "string",
           "format": "date"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
         }
       }
     }

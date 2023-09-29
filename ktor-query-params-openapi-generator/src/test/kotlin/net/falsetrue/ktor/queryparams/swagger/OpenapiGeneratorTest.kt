@@ -3,6 +3,7 @@ package net.falsetrue.ktor.queryparams.swagger
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -62,23 +63,29 @@ fun TestApplicationBuilder.simpleApplication() = application {
 
             val okResult = responds<Result>()
                 .description("Successful operation")
+            val badRequest = responds<Error>(HttpStatusCode.BadRequest)
+                .description("Bad request")
             openApi {
                 get.tags = listOf("tag1", "tag2")
             }
             doGet {
                 hiddenParam.get()
                 customApiProperty.get()
-                okResult.send(
-                    Result(
-                        stringParam.get(),
-                        intParam.get(),
-                        boolParam.get(),
-                        requiredParam.get(),
-                        manyParam.get(),
-                        enumParam.get(),
-                        localDateParam.get(),
+                try {
+                    okResult.send(
+                        Result(
+                            stringParam.get(),
+                            intParam.get(),
+                            boolParam.get(),
+                            requiredParam.get(),
+                            manyParam.get(),
+                            enumParam.get(),
+                            localDateParam.get(),
+                        )
                     )
-                )
+                } catch (e: Exception) {
+                    badRequest.send(Error("An error occurred"))
+                }
             }
         }
         route("/exlude") {
@@ -104,6 +111,10 @@ private data class Result(
     val localDate: LocalDate?,
     @ApiModelProperty(hidden = true)
     val hiddenProperty: String = "hidden",
+)
+
+private data class Error(
+    val message: String
 )
 
 @Suppress("unused")

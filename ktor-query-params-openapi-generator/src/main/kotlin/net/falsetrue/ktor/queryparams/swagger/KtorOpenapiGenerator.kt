@@ -109,6 +109,7 @@ private fun getOperation(childRoute: Route): Operation {
         }
         childRoute.getResponses().forEach { response ->
             produces = (produces ?: emptyList()) + response.contentType.let { it.contentType + "/" + it.contentSubtype }
+            produces = produces.distinct()
             addResponse(response.code.value.toString(), getResponse(response))
         }
     }
