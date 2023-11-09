@@ -5,6 +5,7 @@ dependencies {
 
     api(libs.swaggerCore)
 
+    testImplementation(libs.junit)
     testImplementation(libs.ktorServerCoreJvm)
     testImplementation(libs.ktorServerTestHost)
     testImplementation(libs.ktorServerContentNegotiation)
@@ -18,7 +19,7 @@ publishing {
         getByName<MavenPublication>("maven") {
             pom {
                 name = "Ktor Query Params Library"
-                description = "Facilitates the automatic generation of Swagger definitions for Ktor endpoints that utilize query parameters"
+                description = "Performs the automatic generation of Swagger definitions for Ktor endpoints that uses ktor-query-parameters"
                 url = "https://github.com/Vladiatro/ktor-query-params/ktor-query-params-openapi-generator"
             }
         }

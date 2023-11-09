@@ -9,7 +9,7 @@ The **ktor-query-params** library consists of two modules that provide defined h
 The **ktor-query-params** module introduces a convenient way to define and manage query parameters and responses in Ktor applications. It enables you to pre-declare query parameters with explicit type checks and conversions, ensuring that your code adheres to the specified contract.
 
 #### Installing (Gradle)
-`implementation("net.falsetrue:ktor-query-params:0.1.0")`
+`implementation("net.falsetrue:ktor-query-params:0.2.0")`
 
 #### Features
 
@@ -30,6 +30,16 @@ routing {
         val manyParam = stringParam("manyParam").many() // List<String>
         val enumParam = enumParam<TestEnum>("enum") // TestEnum?
         val localDateParam = localDateParam("localDate") // LocalDate?
+            .onParseError { paramName, parsedString ->
+                throw IllegalArgumentException("Wrong $paramName: $parsedString")
+            }
+        val requiredParamIfBoolIsTrue = stringParam("requiredIfBoolIsTrue")
+            .convert {
+                if (boolParam.get() && it == null) {
+                    throw IllegalArgumentException("$paramName should be specified if bool is true")
+                }
+                it
+            }
 
         val okResult = responds<Result>()
         
@@ -43,7 +53,8 @@ routing {
                     requiredParam.get(),
                     manyParam.get(),
                     enumParam.get(),
-                    localDateParam.get()
+                    localDateParam.get(),
+                    requiredParamIfBoolIsTrue.get()
                 )
             )
         }
@@ -64,7 +75,7 @@ routing {
 The **ktor-query-params-openapi-generator** module wraps the `io.swagger:swagger-core` library and facilitates the automatic generation of Swagger definitions for Ktor endpoints that utilize query parameters defined with the prior module.
 
 #### Installing (Gradle)
-`implementation("net.falsetrue:ktor-query-params-openapi-generator:0.1.0")`
+`implementation("net.falsetrue:ktor-query-params-openapi-generator:0.2.0")`
 
 #### Features
 

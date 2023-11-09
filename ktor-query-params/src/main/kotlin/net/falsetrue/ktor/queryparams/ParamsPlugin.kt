@@ -4,7 +4,6 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
-import io.ktor.util.pipeline.*
 import kotlin.reflect.typeOf
 
 object ParamsPlugin : BaseRouteScopedPlugin<Unit, ParamsPluginContext> {
@@ -23,7 +22,7 @@ class ParamsPluginContext {
     val responses = mutableMapOf<RouteContext, MutableList<Response<*>>>()
 
     fun stringParam(route: Route, name: String): Param<String?> {
-        return Param(name, RouteContext(this, route), listOf(TypeAction(String::class.java))) { it[name] }
+        return Param(name, RouteContext(this, route), listOf(TypeAction(String::class.java))) { _, params -> params[name] }
             .also { param ->
                 params.computeIfAbsent(param.context) { ArrayList() }.add(param)
             }
@@ -63,25 +62,23 @@ data class RouteContext(
 )
 
 class RouteCallContext(
-    val ctx: PipelineContext<Unit, ApplicationCall>,
+    val call: ApplicationCall
 ) {
-    val call = ctx.context
+    fun <T> Param<T>.get(): T = call.get(this)
 
-    fun <T> Param<T>.get(): T = ctx.context.get(this)
-
-    suspend inline fun <reified T : Any> Response<T>.send(body: T) = ctx.context.send(this, body)
+    suspend inline fun <reified T : Any> Response<T>.send(body: T) = call.send(this, body)
 }
 
 fun Route.doGet(body: suspend RouteCallContext.() -> Unit) {
     get {
-        val context = RouteCallContext(this)
+        val context = RouteCallContext(this.context)
         body(context)
     }
 }
 
 fun Route.doPost(body: suspend RouteCallContext.() -> Unit) {
     post {
-        val context = RouteCallContext(this)
+        val context = RouteCallContext(this.context)
         body(context)
     }
 }

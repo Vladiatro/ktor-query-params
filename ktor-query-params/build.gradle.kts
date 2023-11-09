@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(libs.ktorServerCore)
 
+    testImplementation(libs.junit)
     testImplementation(libs.ktorServerCoreJvm)
     testImplementation(libs.ktorServerTestHost)
     testImplementation(libs.ktorServerContentNegotiation)

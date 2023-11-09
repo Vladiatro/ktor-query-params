@@ -4,6 +4,7 @@ ktor = "2.3.3"
 swagger = "1.6.11"
 jackson = "2.15.1"
 jsonUnit = "2.16.2"
+junit = "5.10.1"
 
 [libraries]
 kotlinStdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -19,5 +20,6 @@ ktorSerializationJson = { module = "io.ktor:ktor-serialization-jackson", version
 
 swaggerCore = { module = "io.swagger:swagger-core", version.ref = "swagger" }
 
+junit = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 jsonUnit = { module = "net.javacrumbs.json-unit:json-unit", version.ref = "jsonUnit" }
 jackson = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }

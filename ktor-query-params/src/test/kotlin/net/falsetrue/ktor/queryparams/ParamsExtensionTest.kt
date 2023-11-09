@@ -9,10 +9,10 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import java.time.LocalDate
-import kotlin.test.assertEquals
 
 class KtorTest {
     @Test
@@ -136,6 +136,75 @@ class KtorTest {
         val response = client.get("/test") { }
         val result: String = response.body()
         assertEquals("Parameter requiredParam is not specified", result)
+    }
+
+    @Test
+    fun testOnMissing() = testApplication {
+        val client = createClient {
+            install(ContentNegotiation) {
+                jackson()
+            }
+        }
+        application {
+            routing {
+                val requiredParam = stringParam("requiredParam").required()
+                    .onMissing { throw IllegalArgumentException("Parameter $it is not specified") }
+                route("/test") {
+                    doGet {
+                        try {
+                            requiredParam.get()
+                        } catch (e: IllegalArgumentException) {
+                            call.respond(e.message ?: "")
+                        }
+                    }
+                }
+            }
+            install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
+                jackson()
+            }
+        }
+        val response = client.get("/test") { }
+        val result: String = response.body()
+        assertEquals("Parameter requiredParam is not specified", result)
+    }
+
+    @Test
+    fun testOnParseError() = testApplication {
+        val client = createClient {
+            install(ContentNegotiation) {
+                jackson()
+            }
+        }
+        application {
+            routing {
+                val languageParam = stringParam("lang")
+                val requiredParam = localDateParam("dateParam").required()
+                    .onParseError { paramName, parsedString ->
+                        when (languageParam.get()) {
+                            "da" -> throw IllegalArgumentException("Ugyldig parameter $paramName: $parsedString")
+                            else -> throw IllegalArgumentException("Invalid parameter $paramName: $parsedString")
+                        }
+                    }
+                route("/test") {
+                    doGet {
+                        try {
+                            requiredParam.get()
+                        } catch (e: IllegalArgumentException) {
+                            call.respond(e.message ?: "")
+                        }
+                    }
+                }
+            }
+            install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
+                jackson()
+            }
+        }
+        val response = client.get("/test") {
+            parameter("dateParam", "wrongDate")
+            parameter("lang", "da")
+        }
+        val result: String = response.body()
+        assertEquals("Ugyldig parameter dateParam: wrongDate", result)
     }
 
     @Test
